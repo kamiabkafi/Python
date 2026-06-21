@@ -1,0 +1,67 @@
+# ---------- Basic Facts ----------
+family = {
+    "john": {"gender": "male", "children": ["paul", "mary"]},
+    "paul": {"gender": "male", "children": ["alex", "jane"]},
+    "mary": {"gender": "female", "children": ["tom", "susan"]},
+    "tom": {"gender": "male", "children": []},
+    "susan": {"gender": "female", "children": []},
+    "alex": {"gender": "male", "children": []},
+    "jane": {"gender": "female", "children": []},
+    "linda": {"gender": "female", "children": []}
+}
+
+def parent(x, y):
+    return y in family[x]["children"]
+
+def father(x, y):
+    return parent(x, y) and family[x]["gender"] == "male"
+
+def mother(x, y):
+    return parent(x, y) and family[x]["gender"] == "female"
+
+def siblings(x):
+    sibs = []
+    for p in family:
+        if x in family[p]["children"]:
+            sibs = [c for c in family[p]["children"] if c != x]
+    return sibs
+
+def grandparent(x, y):
+    for child in family[x]["children"]:
+        if y in family[child]["children"]:
+            return True
+    return False
+
+def grandfather(x, y):
+    return grandparent(x, y) and family[x]["gender"] == "male"
+
+def grandmother(x, y):
+    return grandparent(x, y) and family[x]["gender"] == "female"
+
+def uncle(x, y):
+    uncles = []
+    for p in family:
+        if y in family[p]["children"]:
+            uncles.extend([s for s in siblings(p) if family[s]["gender"] == "male"])
+    return x in uncles
+
+def aunt(x, y):
+    aunts = []
+    for p in family:
+        if y in family[p]["children"]:
+            aunts.extend([s for s in siblings(p) if family[s]["gender"] == "female"])
+    return x in aunts
+
+def cousins(x):
+    result = []
+    for p in family:
+        if x in family[p]["children"]:
+            for s in siblings(p):
+                result.extend(family[s]["children"])
+    return result
+
+
+print("Siblings of Mary:", siblings("mary"))
+print("Johns granddaughter:", [c for c in family["mary"]["children"] if family[c]["gender"]=="female"])
+print("Pauls cousins:", cousins("paul"))
+print("Uncles of Tom:", [u for u in family if uncle(u, "tom")])
